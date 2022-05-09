@@ -70,6 +70,11 @@ public class Drivetrain extends SubsystemBase {
    * 
   */
   public Drivetrain() {
+    // We need to invert one side of the drivetrain so that positive voltages
+    // result in both sides moving forward. Depending on how your robot's
+    // gearbox is constructed, you might have to invert the left side instead.
+    m_rightMotor.setInverted(true);
+
     // Use inches as unit for encoder distances
     m_leftEncoder.setDistancePerPulse((Math.PI * DriveConstants.kWheelDiameterMeters) / DriveConstants.kCountsPerRevolution);
     m_rightEncoder.setDistancePerPulse((Math.PI * DriveConstants.kWheelDiameterMeters) / DriveConstants.kCountsPerRevolution);
@@ -83,10 +88,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putData("fieldEstimate", m_estimatedField2d);
   }
 
-  public void arcadeDrive(double zaxisRotate, double xaxisSpeed) {
-    SmartDashboard.putNumber("xaxisSpeed", xaxisSpeed);
-    SmartDashboard.putNumber("zaxisRotate", zaxisRotate);
-    // These got reversed when imported to 2022?
+  public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
   }
 
