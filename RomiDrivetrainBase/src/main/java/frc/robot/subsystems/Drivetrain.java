@@ -61,7 +61,7 @@ public class Drivetrain extends SubsystemBase {
   private final Field2d m_estimatedField2d = new Field2d();
 
   // Create a slew rate filter to give more control over the speed from the joystick
-  private final SlewRateLimiter m_filter = new SlewRateLimiter(0.5);
+  private final SlewRateLimiter m_filter = new SlewRateLimiter(0.8);
   private final SlewRateLimiter m_filter_turn = new SlewRateLimiter(0.5);
 
   /*********************************
