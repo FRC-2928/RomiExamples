@@ -28,8 +28,8 @@ public class Vision extends SubsystemBase {
     private NetworkTableEntry fspEntry;
     private NetworkTableEntry detectionsEntry;
 
-    Detections[] m_detections;
-    Map<String, Double> emptyMap = Collections.emptyMap();
+    private Detections[] m_detections;
+    private boolean haveDetections = false;
 
     public Vision() {
         
@@ -46,18 +46,21 @@ public class Vision extends SubsystemBase {
         detectionsEntry = m_tableML.getEntry("detections");
         parseDetections(detectionsEntry.getString("No detections"));
         
-        fspEntry = m_tableML.getEntry("fsp");
-        SmartDashboard.putNumber("FSP", fspEntry.getDouble(0.0));
+        if (haveDetections) {
+            fspEntry = m_tableML.getEntry("fsp");
+            SmartDashboard.putNumber("FSP", fspEntry.getDouble(0.0));
 
-        SmartDashboard.putString("label", getLabel());
-        SmartDashboard.putNumber("ymin", getYMin());
-        SmartDashboard.putNumber("xmin", getXMin());
-        SmartDashboard.putNumber("ymax", getYMax());
-        SmartDashboard.putNumber("xmax", getXMax());
-        SmartDashboard.putNumber("confidence", getConfidence());
-        SmartDashboard.putNumber("X", getXCoord());
-        SmartDashboard.putNumber("Y", getYCoord());
-        SmartDashboard.putNumber("Z", getZCoord());
+            SmartDashboard.putString("label", getLabel());
+            SmartDashboard.putNumber("ymin", getYMin());
+            SmartDashboard.putNumber("xmin", getXMin());
+            SmartDashboard.putNumber("ymax", getYMax());
+            SmartDashboard.putNumber("xmax", getXMax());
+            SmartDashboard.putNumber("confidence", getConfidence());
+            SmartDashboard.putNumber("X", getXCoord());
+            SmartDashboard.putNumber("Y", getYCoord());
+            SmartDashboard.putNumber("Z", getZCoord());
+        }
+        
     }
 
     public void parseDetections(String json) {
@@ -66,9 +69,11 @@ public class Vision extends SubsystemBase {
         try {
             //JSON string to Java Object
             m_detections = mapper.readValue(json, Detections[].class);
+            haveDetections = true;
         } catch (JsonProcessingException e) {
             System.out.println(e);
             System.out.println(json);
+            haveDetections = false;
         } 	 
     }
 
