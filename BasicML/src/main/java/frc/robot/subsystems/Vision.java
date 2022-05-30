@@ -27,6 +27,8 @@ public class Vision extends SubsystemBase {
     private NetworkTableEntry resolutionEntry;
     private NetworkTableEntry fspEntry;
     private NetworkTableEntry detectionsEntry;
+    private NetworkTableEntry xaxisSpeedEntry;
+    private NetworkTableEntry zaxisRotateEntry;
 
     private Detections[] m_detections;
     private boolean haveDetections = false;
@@ -34,7 +36,7 @@ public class Vision extends SubsystemBase {
     public Vision() {
         
         deviceEntry = m_tableML.getEntry("device");
-        resolutionEntry = m_tableML.getEntry("resolution");
+        resolutionEntry = m_tableML.getEntry("resolution");  
         
         SmartDashboard.putString("OAK Device", deviceEntry.getString("Not getting device"));
         SmartDashboard.putString("Image Resolution:", resolutionEntry.getString("No resolution"));
@@ -45,6 +47,9 @@ public class Vision extends SubsystemBase {
         // Data from Python 
         detectionsEntry = m_tableML.getEntry("detections");
         parseDetections(detectionsEntry.getString("No detections"));
+
+        xaxisSpeedEntry = m_tableML.getEntry("xaxisSpeed");
+        zaxisRotateEntry = m_tableML.getEntry("zaxisRotate"); 
         
         if (haveDetections) {
             fspEntry = m_tableML.getEntry("fsp");
@@ -83,6 +88,14 @@ public class Vision extends SubsystemBase {
 
     public int getConfidence() {
         return m_detections[0].confidence;
+    }
+
+    public Double getXAxisSpeed() {
+        return xaxisSpeedEntry.getDouble(0.0);
+    }
+
+    public Double getZAxisRotate() {
+        return zaxisRotateEntry.getDouble(0.0);
     }
 
     // Get bounding box components
