@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -67,6 +69,7 @@ public class Drivetrain extends SubsystemBase {
   // Create a slew rate filter to give more control over the speed from the joystick
   private final SlewRateLimiter m_filter = new SlewRateLimiter(0.5);
   private final SlewRateLimiter m_filter_turn = new SlewRateLimiter(0.5);
+  private final LinearFilter m_averaging_filter = LinearFilter.movingAverage(5);
   
   // Used to put data onto Shuffleboard
   private ShuffleboardTab driveTab = Shuffleboard.getTab("Drivetrain");
@@ -122,6 +125,12 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("ArcadeDrive xaxisSpeed", xaxisSpeed);
     SmartDashboard.putNumber("ArcadeDrive zaxisRotate", zaxisRotate);
     m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
+  }
+
+  public void averagingArcadeDrive(double xaxisSpeed, double zaxisRotate) {
+    SmartDashboard.putNumber("ArcadeDrive xaxisSpeed", xaxisSpeed);
+    SmartDashboard.putNumber("ArcadeDrive zaxisRotate", zaxisRotate);
+    m_diffDrive.arcadeDrive(xaxisSpeed, m_averaging_filter.calculate(zaxisRotate));
   }
 
   public void rateLimitedArcadeDrive(double xaxisSpeed, double zaxisRotate) {
