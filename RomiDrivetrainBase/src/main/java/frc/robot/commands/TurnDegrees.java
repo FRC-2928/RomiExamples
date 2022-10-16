@@ -60,6 +60,9 @@ public class TurnDegrees extends CommandBase {
     return getAverageTurningDistance() >= (DriveConstants.kMetersPerDegree * m_degrees);
   }
 
+  /*
+  * Modified in the Basic Robot Structure lab to use meters.
+  */
   private double getAverageTurningDistance() {
     double leftDistance = Math.abs(m_drive.getLeftDistanceMeters());
     double rightDistance = Math.abs(m_drive.getRightDistanceMeters());

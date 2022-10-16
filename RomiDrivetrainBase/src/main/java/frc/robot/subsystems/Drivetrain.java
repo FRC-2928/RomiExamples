@@ -45,10 +45,10 @@ public class Drivetrain extends SubsystemBase {
   // Set up the BuiltInAccelerometer
   private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
 
-  // Odometry class for tracking robot pose
+  // Odometry class for tracking robot pose. Added in Telemetry lab.
   private final DifferentialDriveOdometry m_odometry;
 
-  // Show a field diagram for tracking odometry
+  // Show a field diagram for tracking odometry. Added in Telemetry lab.
   private final Field2d m_field2d = new Field2d();
 
   // Pose estimator State Space way for tracking the robot pose
@@ -79,7 +79,7 @@ public class Drivetrain extends SubsystemBase {
     m_rightEncoder.setDistancePerPulse((Math.PI * DriveConstants.kWheelDiameterMeters) / DriveConstants.kCountsPerRevolution);
     resetEncoders();
 
-    // Setup Odometry
+    // Setup Odometry.  Added in Telemetry lab.
     m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
     SmartDashboard.putData("field", m_field2d);
 
@@ -110,6 +110,8 @@ public class Drivetrain extends SubsystemBase {
 
   /**
    * The distance in meters
+   * 
+   * Modified in the Basic Robot Structure lab.
    *
    * @return The distance in meters for the left wheel
    */
@@ -119,6 +121,8 @@ public class Drivetrain extends SubsystemBase {
 
    /**
    * The distance in meters
+   * 
+   * Modified in the Basic Robot Structure lab.
    *
    * @return The distance in meters for the right wheel
    */
@@ -127,7 +131,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
    /**
-   * The average distance in meters for both wheels
+   * The average distance in meters for both wheels.
+   * 
+   * Modified in the Basic Robot Structure lab.
    *
    * @return The average distance in meters for both wheels
    */
@@ -196,12 +202,15 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // This is added in the Telemetry tutorial.
     publishTelemetry();
   }
 
   /**  
    * Publishes telemetry data to the Network Tables for use
-   * in Shuffleboard and the Simulator
+   * in Shuffleboard and the Simulator.  
+   * 
+   * This function is added in the Telemetry lab.
   */
   public void publishTelemetry() {
     // Update the odometry in the periodic block
@@ -240,6 +249,9 @@ public class Drivetrain extends SubsystemBase {
 
   /**
    * Returns the currently estimated pose of the robot.
+   * 
+   * Added in Telemetry lab.
+   * 
    * @return The pose
    */
   public Pose2d getPose() {
