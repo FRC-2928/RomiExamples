@@ -24,9 +24,9 @@ public final class Constants {
     public static final double kCountsPerRevolution = 1440.0;
     public static final double kWheelDiameterMeters = 0.07;
     public static final double kMetersPerDegree = Math.PI * 0.141 / 360;
+    public static final double kTrackwidthMeters = 0.142072613;
 
     
-    public static final double kTrackwidthMeters = 0.142072613;
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackwidthMeters);
 

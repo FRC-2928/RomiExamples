@@ -30,11 +30,6 @@
       "/SmartDashboard/fieldEstimate": "Field2d"
     },
     "windows": {
-      "/Shuffleboard/Drivetrain/Drivetrain": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/SendableChooser[0]": {
         "window": {
           "visible": true
@@ -55,6 +50,12 @@
     }
   },
   "NetworkTables": {
+    "Shuffleboard": {
+      "Drivetrain": {
+        "open": true
+      },
+      "open": true
+    },
     "SmartDashboard": {
       "open": true
     }

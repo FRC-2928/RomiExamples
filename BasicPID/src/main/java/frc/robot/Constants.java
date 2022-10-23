@@ -89,12 +89,12 @@ public final class Constants {
                                              DrivetrainConstants.kMaxTurnAccelDegPerSSquared);                                    
 
         // For distances PID
-        public static final double kPDriveVel = 2.2;
+        public static final double kPDriveVel = 1.1;
         public static final double kIDriveVel = 0.2;
         public static final double kDDriveVel = 0;
 
         // Tolerances for distance drive
-        public static final double kDistanceToleranceMeters = 0.05;
+        public static final double kDistanceToleranceMeters = 0.06;
         public static final double kVelocityToleranceMetersPerS = 0.05;
 
         // For turns PID

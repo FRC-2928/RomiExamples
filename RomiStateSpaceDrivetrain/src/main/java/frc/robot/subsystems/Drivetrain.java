@@ -78,7 +78,13 @@ public class Drivetrain extends SubsystemBase {
       .withPosition(3, 3)
       .getEntry();    
 
-  /** Creates a new Drivetrain. */
+  // -----------------------------------------------------------
+  // Initialization
+  // -----------------------------------------------------------    
+
+  /*********************************
+   * Creates a new Drivetrain.
+  **********************************/
   public Drivetrain() {
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -116,8 +122,15 @@ public class Drivetrain extends SubsystemBase {
       .withPosition(1, 5);     
   }
 
+  // -----------------------------------------------------------
+  // Control Input
+  // -----------------------------------------------------------
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
+  }
+
+  public void rateLimitedArcadeDrive(double xaxisSpeed, double zaxisRotate) {
+    m_diffDrive.arcadeDrive(m_filter.calculate(xaxisSpeed), m_filter_turn.calculate(zaxisRotate));
   }
 
   public void setLeftVoltage(double voltage) {
@@ -133,6 +146,30 @@ public class Drivetrain extends SubsystemBase {
     m_rightEncoder.reset();
   }
 
+  /** Reset the gyro. */
+  public void resetGyro() {
+    m_gyro.reset();
+  }
+  
+  /**
+   * Zeroes the heading of the robot
+   */
+  public void zeroHeading() {
+    m_gyro.reset();
+  }
+
+  /**
+   * Resets the odometry to the specified pose
+   * @param pose The pose to which to set the odometry
+   */
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    m_odometry.resetPosition(pose, m_gyro.getRotation2d());
+  }
+
+  // -----------------------------------------------------------
+  // System State
+  // -----------------------------------------------------------
   public int getLeftEncoderCount() {
     return m_leftEncoder.get();
   }
@@ -213,64 +250,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Current angle of the Romi around the Z-axis.
-   *
-   * @return The current angle of the Romi in degrees
-   */
-  public double getGyroAngleZ() {
-    return m_gyro.getAngleZ();
-  }
-
-  /** Reset the gyro. */
-  public void resetGyro() {
-    m_gyro.reset();
-  }
-
-  @Override
-  public void periodic() {
-    publishTelemetry();
-  }
-
-  /**  
-   * Publishes telemetry data to the Network Tables for use
-   * in Shuffleboard and the Simulator
-  */
-  public void publishTelemetry() {
-    // Update the odometry in the periodic block
-    m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
-    
-    // Offset the pose to start 1.5 meters on the Y axis
-    double yPoseOffset = 1.5;
-    Pose2d currentPose = getPose();
-    Pose2d poseOffset = new Pose2d(currentPose.getX(), 
-                                   currentPose.getY() + yPoseOffset, 
-                                   currentPose.getRotation());
-    // Update the Field2D object (so that we can visualize this in sim)
-    m_field2d.setRobotPose(poseOffset);
-
-    // Updates the the Unscented Kalman Filter using only wheel encoder information.
-    m_estimator.update(m_gyro.getRotation2d(), 
-                      getWheelSpeeds(), 
-                       m_leftEncoder.getDistance(), 
-                       m_rightEncoder.getDistance());
-
-
-    // Offset the pose to start 1.5 meters on the Y axis
-    Pose2d currentEstimatedPose = getEstimatedPose();
-    Pose2d estimatedPoseOffset = new Pose2d(currentEstimatedPose.getX(), 
-                                            currentEstimatedPose.getY() + yPoseOffset, 
-                                            currentEstimatedPose.getRotation());
-
-    // Update the Field2D object (so that we can visualize this in sim)
-    m_estimatedField2d.setRobotPose(estimatedPoseOffset);
-
-    // Display the meters per/second for each wheel and the heading
-    SmartDashboard.putNumber("Left Encoder Velocity", m_leftEncoder.getRate());
-    SmartDashboard.putNumber("Right Encoder Velocity", m_rightEncoder.getRate());
-    SmartDashboard.putNumber("Heading", getHeading());
-  }
-
-  /**
    * Returns the currently estimated pose of the robot.
    * @return The pose
    */
@@ -278,15 +257,7 @@ public class Drivetrain extends SubsystemBase {
     return m_odometry.getPoseMeters();
   }
   
-  /**
-   * Resets the odometry to the specified pose
-   * @param pose The pose to which to set the odometry
-   */
-  public void resetOdometry(Pose2d pose) {
-    resetEncoders();
-    m_odometry.resetPosition(pose, m_gyro.getRotation2d());
-  }
-
+  
   /**
    * Returns the currently estimated pose of the robot.
    * @return The pose
@@ -295,12 +266,6 @@ public class Drivetrain extends SubsystemBase {
     return m_estimator.getEstimatedPosition();
   }
 
-  /**
-   * Zeroes the heading of the robot
-   */
-  public void zeroHeading() {
-    m_gyro.reset();
-  }
   
   /**
    * Returns the heading of the robot
@@ -326,6 +291,63 @@ public class Drivetrain extends SubsystemBase {
    */
   public LinearSystem<N2, N2, N2> getPlant() {
     return DriveConstants.kDrivetrainPlant;
+  }
+
+  /**
+   * Current angle of the Romi around the Z-axis.
+   *
+   * @return The current angle of the Romi in degrees
+   */
+  public double getGyroAngleZ() {
+    return m_gyro.getAngleZ();
+  }
+
+  // -----------------------------------------------------------
+  // Process Logic
+  // -----------------------------------------------------------
+  @Override
+  public void periodic() {
+    publishTelemetry();
+  }
+
+  /**  
+   * Publishes telemetry data to the Network Tables for use
+   * in Shuffleboard and the Simulator
+  */
+  public void publishTelemetry() {
+
+    // Display the meters per/second for each wheel and the heading
+    SmartDashboard.putNumber("Left Encoder Velocity", m_leftEncoder.getRate());
+    SmartDashboard.putNumber("Right Encoder Velocity", m_rightEncoder.getRate());
+    SmartDashboard.putNumber("Heading", getHeading());
+
+    // Update the odometry in the periodic block
+    m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
+    
+    // Offset the pose to start 1.5 meters on the Y axis
+    double yPoseOffset = 1.5;
+    Pose2d currentPose = getPose();
+    Pose2d poseOffset = new Pose2d(currentPose.getX(), 
+                                   currentPose.getY() + yPoseOffset, 
+                                   currentPose.getRotation());
+    // Update the Field2D object (so that we can visualize this in sim)
+    m_field2d.setRobotPose(poseOffset);
+
+    // Updates the the Unscented Kalman Filter using only wheel encoder information.
+    m_estimator.update(m_gyro.getRotation2d(), 
+                      getWheelSpeeds(), 
+                       m_leftEncoder.getDistance(), 
+                       m_rightEncoder.getDistance());
+
+    // Offset the pose to start 1.5 meters on the Y axis
+    Pose2d currentEstimatedPose = getEstimatedPose();
+    Pose2d estimatedPoseOffset = new Pose2d(currentEstimatedPose.getX(), 
+                                            currentEstimatedPose.getY() + yPoseOffset, 
+                                            currentEstimatedPose.getRotation());
+
+    // Update the Field2D object (so that we can visualize this in sim)
+    m_estimatedField2d.setRobotPose(estimatedPoseOffset);
+
   }
 
 }

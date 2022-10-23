@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -54,19 +53,28 @@ public class DriveDistancePID extends PIDCommand {
     getController().setSetpoint(table.getEntry("Distance").getDouble(0.0));
     getController().setP(table.getEntry("kP").getDouble(DrivetrainConstants.kPDriveVel));
     getController().setD(table.getEntry("kD").getDouble(DrivetrainConstants.kDDriveVel));
+    getController().setI(table.getEntry("kI").getDouble(DrivetrainConstants.kIDriveVel));
+
+    // Publish that the command is in-process
+    SmartDashboard.putBoolean("Finished", false);
   }
   
-
   public void execute() {
     super.execute();
+    // Keep track of how far away we are from the setpoint
     SmartDashboard.putNumber("Error", getController().getPositionError());
-    SmartDashboard.putBoolean("Finished", getController().atSetpoint());
   }
 
-  // Returns true when the command should end.
+  // Returns true when we're at the setpoint, so the command should end.
   @Override
   public boolean isFinished() {
     return getController().atSetpoint();
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    // Publish that the command is done
+    SmartDashboard.putBoolean("Finished", getController().atSetpoint());
   }
 
   public void resetOdometry() {

@@ -4,21 +4,11 @@
 
 package frc.robot;
 
-import java.util.Map;
-
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.AutonomousDistance;
-import frc.robot.commands.AutonomousPIDDistance;
-import frc.robot.commands.AutonomousTime;
+import frc.robot.commands.AutonomousDriveSquare;
 import frc.robot.commands.DriveDistancePID;
 import frc.robot.commands.DriveDistanceProfiled;
 import frc.robot.commands.ResetOdometry;
@@ -31,7 +21,6 @@ import frc.robot.subsystems.OnBoardIO.ChannelMode;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 
@@ -55,15 +44,6 @@ public class RobotContainer {
   // Create SmartDashboard chooser for autonomous routines
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-  // Used to get data input from Shuffleboard
-  private NetworkTableEntry m_distance;
-  private NetworkTableEntry m_distanceP;
-  private NetworkTableEntry m_distanceD;
-
-  private NetworkTableEntry m_angle;
-  private NetworkTableEntry m_angleP;
-  private NetworkTableEntry m_angleD;
-
   // NOTE: The I/O pin functionality of the 5 exposed I/O pins depends on the hardware "overlay"
   // that is specified when launching the wpilib-ws server on the Romi raspberry pi.
   // By default, the following are available (listed in order from inside of the board to outside):
@@ -78,7 +58,6 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     configureButtonBindings();
-    setupShuffleboard();
   }
 
   /**
@@ -99,50 +78,15 @@ public class RobotContainer {
         .whenInactive(new PrintCommand("Button A Released"));
 
     // Setup SmartDashboard options
-    m_chooser.setDefaultOption("Drive Distance PID", new DriveDistancePID(1.0, m_drivetrain));
-    m_chooser.addOption("Profiled Distance PID", new DriveDistanceProfiled(1.0, m_drivetrain));
+    m_chooser.setDefaultOption("Drive Distance PID", new DriveDistancePID(0.5, m_drivetrain));
+    m_chooser.addOption("Profiled Distance PID", new DriveDistanceProfiled(0.5, m_drivetrain));
     m_chooser.addOption("Profiled Turn Angle PID", new TurnToAngleProfiled(180, m_drivetrain));
     m_chooser.addOption("Turn Degrees PID", new TurnToAnglePID(90, m_drivetrain));
-    m_chooser.addOption("Drive Square", new AutonomousPIDDistance(m_drivetrain));   
+    m_chooser.addOption("Drive Square", new AutonomousDriveSquare(m_drivetrain));   
     m_chooser.addOption("Reset Odometry", new ResetOdometry(m_drivetrain));
     SmartDashboard.putData(m_chooser);
 
     m_driverOI.resetOdometry().whenPressed(new ResetOdometry(m_drivetrain));
-  }
-
-  /**
-   * Setup Shuffleboard
-   *
-   */
-  private void setupShuffleboard() {
-
-    // Create a tab for the Drivetrain
-    ShuffleboardTab driveTab = Shuffleboard.getTab("Drivetrain");
-
-    // Add the Drivetrain subsystem
-    driveTab.add(m_drivetrain)
-      .withPosition(6, 0);
-
-    // Add PID tuning parameters
-    m_distanceP = driveTab.add("kP", DrivetrainConstants.kPDriveVel)
-      .withPosition(3, 1)
-      .getEntry();  
-
-    m_distanceD = driveTab.add("kD", DrivetrainConstants.kDDriveVel)
-      .withPosition(3, 2)
-      .getEntry();  
-  
-    m_angle = driveTab.add("Heading Angle Degrees", m_drivetrain.getHeading())
-      .withPosition(4, 0)
-      .getEntry();  
-
-    m_angleP = driveTab.add("anglekP", DrivetrainConstants.kPTurnVel)
-      .withPosition(4, 1)
-      .getEntry();  
-
-    m_angleD = driveTab.add("anglekD", DrivetrainConstants.kDTurnVel)
-      .withPosition(4, 2)
-      .getEntry();  
   }
 
   /**
