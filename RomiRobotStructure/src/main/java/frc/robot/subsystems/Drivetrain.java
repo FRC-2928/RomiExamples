@@ -33,6 +33,10 @@ public class Drivetrain extends SubsystemBase {
   // Set up the BuiltInAccelerometer
   private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
 
+  // -----------------------------------------------------------
+  // Initialization
+  // -----------------------------------------------------------
+
   /** Creates a new Drivetrain. */
   public Drivetrain() {
     // We need to invert one side of the drivetrain so that positive voltages
@@ -46,6 +50,9 @@ public class Drivetrain extends SubsystemBase {
     resetEncoders();
   }
 
+  // -----------------------------------------------------------
+  // Control Input
+  // -----------------------------------------------------------
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
   }
@@ -55,6 +62,14 @@ public class Drivetrain extends SubsystemBase {
     m_rightEncoder.reset();
   }
 
+  /** Reset the gyro. */
+  public void resetGyro() {
+    m_gyro.reset();
+  }
+  
+  // -----------------------------------------------------------
+  // System State
+  // -----------------------------------------------------------
   public int getLeftEncoderCount() {
     return m_leftEncoder.get();
   }
@@ -129,11 +144,9 @@ public class Drivetrain extends SubsystemBase {
     return m_gyro.getAngleZ();
   }
 
-  /** Reset the gyro. */
-  public void resetGyro() {
-    m_gyro.reset();
-  }
-
+  // -----------------------------------------------------------
+  // Process Logic
+  // -----------------------------------------------------------
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
