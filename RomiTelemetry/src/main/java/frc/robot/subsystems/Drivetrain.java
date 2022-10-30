@@ -4,12 +4,17 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants;
 import frc.robot.sensors.RomiGyro;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
@@ -33,6 +38,10 @@ public class Drivetrain extends SubsystemBase {
   // Set up the BuiltInAccelerometer
   private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
 
+  // Used to put telemetry data onto Shuffleboard
+  NetworkTableEntry m_headingEntry;
+  NetworkTableEntry m_leftWheelPositionEntry, m_rightWheelPositionEntry;
+  
   // -----------------------------------------------------------
   // Initialization
   // -----------------------------------------------------------
@@ -48,6 +57,28 @@ public class Drivetrain extends SubsystemBase {
     m_leftEncoder.setDistancePerPulse((Math.PI * Constants.kWheelDiameterMeters) / Constants.kCountsPerRevolution);
     m_rightEncoder.setDistancePerPulse((Math.PI * Constants.kWheelDiameterMeters) / Constants.kCountsPerRevolution);
     resetEncoders();
+    setupShuffleboard();
+  }
+
+  private void setupShuffleboard() {
+
+    // Create a tab for the Drivetrain
+    ShuffleboardTab m_driveTab = Shuffleboard.getTab("Drivetrain");
+    m_headingEntry = m_driveTab.add("Heading Deg.", getHeading())
+        .withWidget(BuiltInWidgets.kGraph)      
+        .withSize(3,3)
+        .withPosition(0, 0)
+        .getEntry();  
+    m_leftWheelPositionEntry = m_driveTab.add("Left Wheel Pos.", getLeftDistanceMeters())
+        .withWidget(BuiltInWidgets.kGraph)      
+        .withSize(3,3)  
+        .withPosition(4, 0)
+        .getEntry();  
+    m_rightWheelPositionEntry = m_driveTab.add("Right Wheel Pos.", getRightDistanceMeters())
+        .withWidget(BuiltInWidgets.kGraph)      
+        .withSize(3,3)
+        .withPosition(7, 0)
+        .getEntry(); 
   }
 
   // -----------------------------------------------------------
@@ -155,4 +186,18 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public void publishTelemetry() {
+        
+    // Display the meters per/second for each wheel and the heading
+    SmartDashboard.putNumber("Left Encoder Velocity", m_leftEncoder.getRate());
+    SmartDashboard.putNumber("Right Encoder Velocity", m_rightEncoder.getRate());
+    SmartDashboard.putNumber("Heading", getHeading());
+
+    // Display the distance travelled for each wheel
+    m_leftWheelPositionEntry.setDouble(getLeftDistanceMeters());
+    m_rightWheelPositionEntry.setDouble(getRightDistanceMeters()); 
+    m_headingEntry.setDouble(getHeading());
+  }
+
 }
