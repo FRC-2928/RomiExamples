@@ -44,7 +44,7 @@ public class DriveDistancePID extends PIDCommand {
     getController().setTolerance(DrivetrainConstants.kDistanceToleranceMeters,
                                 DrivetrainConstants.kVelocityToleranceMetersPerS);
 
-    m_drive = drivetrain;
+    // m_drive = drivetrain;
   }
 
   public void initialize() {

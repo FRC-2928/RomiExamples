@@ -83,7 +83,7 @@ public class Drivetrain extends SubsystemBase {
         .withWidget(BuiltInWidgets.kGraph)      
         .withSize(3,3)
         .withPosition(10, 0)
-        .getEntry();     
+        .getEntry();         
   }
 
   // -----------------------------------------------------------
@@ -189,7 +189,7 @@ public class Drivetrain extends SubsystemBase {
   // -----------------------------------------------------------
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    publishTelemetry();
   }
 
   public void publishTelemetry() {
