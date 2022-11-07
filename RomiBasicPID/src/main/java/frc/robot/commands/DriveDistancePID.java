@@ -34,7 +34,7 @@ public class DriveDistancePID extends PIDCommand {
     addRequirements(drivetrain);
 
     // Configure additional PID options by calling `getController` here.
-    getController().setTolerance(0.05, 0.06);
+    getController().setTolerance(0.05, 0.05);
   }
 
   // Returns true when the command should end.

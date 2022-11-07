@@ -10,6 +10,11 @@
       "/LiveWindow/Ungrouped/DigitalInput[2]": "Digital Input",
       "/LiveWindow/Ungrouped/DigitalOutput[3]": "Digital Output",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
@@ -19,7 +24,7 @@
           "visible": true
         }
       },
-      "/LiveWindow/Ungrouped/PIDController[1]": {
+      "/LiveWindow/Ungrouped/PIDController[2]": {
         "window": {
           "visible": true
         }
@@ -49,6 +54,38 @@
         "open": true
       },
       "open": true
+    }
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "max": 400.0,
+              "min": -400.0
+            }
+          ],
+          "height": 272,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Heading"
+            }
+          ],
+          "viewTime": 15.0
+        }
+      ]
+    },
+    "Plot <1>": {
+      "window": {
+        "visible": false
+      }
     }
   }
 }

@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -22,7 +25,61 @@ public final class Constants {
     public static final double kDDriveVel = 0;
 
     // For turns PID
-    public static final double kPTurnVel = 0.05;
+    public static final double kPTurnVel = 0.03;
     public static final double kITurnVel = 0;
-    public static final double kDTurnVel = 0.005;
+    public static final double kDTurnVel = 0.002;
+
+    // For profiled distances PID
+    public static final double kPDriveProfiled = 1.2;
+    public static final double kIDriveProfiled = 0.2;
+    public static final double kDDriveProfiled = 0.0;
+
+    // For profiled turns PID
+    public static final double kPTurnProfiled = 0.05;
+    public static final double kITurnProfiled = 0;
+    public static final double kDTurnProfiled = 0;
+
+    // Max speed and acceleration of the robot
+    public static final double kMaxSpeedMetersPerSecond = 0.5;
+    public static final double kMaxAccelMetersPerSecondSquared = 0.5;
+
+    // Drive profile
+    public static final TrapezoidProfile.Constraints kTrapezoidProfileConstraints =
+    new TrapezoidProfile.Constraints(kMaxSpeedMetersPerSecond,
+                                     kMaxAccelMetersPerSecondSquared);
+
+
+    public static final double kMaxTurnRateDegPerS = 360;
+    public static final double kMaxTurnAccelDegPerSSquared = 200;
+
+    // Turn profile                                    
+    public static final TrapezoidProfile.Constraints kTrapezoidProfileTurnConstraints =
+    new TrapezoidProfile.Constraints(kMaxTurnRateDegPerS,
+                                     kMaxTurnAccelDegPerSSquared);                                 
+    
+    // The linear inertia gain, volts
+    public static final double ksVolts = 0.461;
+    // The linear velocity gain, volts per (meter per second)
+    // Increase this if you drive short
+    public static final double kvVoltSecondsPerMeter = 6.93;
+    public static final double kvVoltSecondsPerMeterLeft = 8.8;
+    public static final double kvVoltSecondsPerMeterRight = 9.5;
+    // The linear acceleration gain, volts per (meter per second squared).
+    public static final double kaVoltSecondsSquaredPerMeter = 0.0737;
+    
+    public static final SimpleMotorFeedforward kFeedForward = 
+        new SimpleMotorFeedforward(ksVolts, 
+                                    kvVoltSecondsPerMeter, 
+                                    kaVoltSecondsSquaredPerMeter);
+
+    // Left and Right motors are very different, so each has its own FF.
+    public static final SimpleMotorFeedforward kLeftFeedForward = 
+        new SimpleMotorFeedforward(ksVolts, 
+                                    kvVoltSecondsPerMeterLeft, 
+                                    kaVoltSecondsSquaredPerMeter);
+
+    public static final SimpleMotorFeedforward kRightFeedForward = 
+        new SimpleMotorFeedforward(ksVolts, 
+                                    kvVoltSecondsPerMeterRight, 
+                                    kaVoltSecondsSquaredPerMeter);
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
@@ -41,6 +42,16 @@ public class Drivetrain extends SubsystemBase {
   // Used to put telemetry data onto Shuffleboard
   NetworkTableEntry m_headingEntry, m_avgDistanceEntry;
   NetworkTableEntry m_leftWheelPositionEntry, m_rightWheelPositionEntry;
+
+  private final PIDController m_leftController =
+    new PIDController(Constants.kPDriveProfiled, 
+                      Constants.kIDriveProfiled, 
+                      Constants.kDDriveProfiled);
+
+  private final PIDController m_rightController =
+    new PIDController(Constants.kPDriveProfiled, 
+                      Constants.kIDriveProfiled, 
+                      Constants.kDDriveProfiled);    
   
   // -----------------------------------------------------------
   // Initialization
@@ -101,6 +112,41 @@ public class Drivetrain extends SubsystemBase {
   /** Reset the gyro. */
   public void resetGyro() {
     m_gyro.reset();
+  }
+
+  /**
+   * Controls the left and right sides of the drive directly with voltages.
+   * 
+   * @param leftVolts the commanded left output
+   * @param rightVolts the commanded right output
+   */
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+
+    // Apply the voltage to the wheels
+    m_leftMotor.setVoltage(leftVolts);
+    m_rightMotor.setVoltage(rightVolts); 
+    m_diffDrive.feed();
+  }
+
+  /**
+   * Drives a straight line at the requested velocity by applying feedforward
+   * and PID output to maintain the velocity. This method calculates a voltage
+   * value for each wheel, which is sent to the motors setVoltage() method.
+   * 
+   * @param velocity The velocity at which to drive
+   */
+  public void setOutputMetersPerSecond(double velocity) {
+    
+    // Calculate feedforward voltage
+    double leftFeedforward = Constants.kFeedForward.calculate(velocity);
+    double rightFeedforward = Constants.kFeedForward.calculate(velocity);
+  
+    // Send it through a PID controller
+    double leftVelocity = m_leftController.calculate(m_leftEncoder.getRate(), velocity);
+    double rightVelocity = m_rightController.calculate(m_rightEncoder.getRate(), velocity);
+    
+    // double calibratedRightSpeed = output * DrivetrainConstants.rightVoltsGain;
+    tankDriveVolts(leftFeedforward + leftVelocity, rightFeedforward + rightVelocity);
   }
 
   // -----------------------------------------------------------
