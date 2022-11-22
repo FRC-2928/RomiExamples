@@ -230,7 +230,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Apply the voltage to the wheels
     m_leftMotor.setVoltage(leftVolts);
-    m_rightMotor.setVoltage(-rightVolts); // We invert this to maintain +ve = forward
+    m_rightMotor.setVoltage(rightVolts);
     m_diffDrive.feed();
   }
 
@@ -404,6 +404,7 @@ public class Drivetrain extends SubsystemBase {
 
   /**
    * Returns the current wheel speeds of the robot.
+   * 
    * @return The current wheel speeds
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {

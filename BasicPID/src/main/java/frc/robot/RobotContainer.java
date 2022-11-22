@@ -79,7 +79,7 @@ public class RobotContainer {
 
     // Setup SmartDashboard options
     m_chooser.setDefaultOption("Drive Distance PID", new DriveDistancePID(0.5, m_drivetrain));
-    m_chooser.addOption("Profiled Distance PID", new DriveDistanceProfiled(0.5, m_drivetrain));
+    m_chooser.addOption("Profiled Distance PID", new DriveDistanceProfiled(1.0, m_drivetrain));
     m_chooser.addOption("Profiled Turn Angle PID", new TurnToAngleProfiled(180, m_drivetrain));
     m_chooser.addOption("Turn Degrees PID", new TurnToAnglePID(90, m_drivetrain));
     m_chooser.addOption("Drive Square", new AutonomousDriveSquare(m_drivetrain));   

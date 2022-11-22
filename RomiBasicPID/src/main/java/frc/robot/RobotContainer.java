@@ -81,7 +81,7 @@ public class RobotContainer {
     m_chooser.addOption("Reset Odometry", new ResetOdometry(m_drivetrain));
     m_chooser.addOption("Drive Distance PID", new DriveDistancePID(0.5, m_drivetrain));
     m_chooser.addOption("Turn To Angle PID", new TurnToAnglePID(90, m_drivetrain));
-    m_chooser.addOption("Profiled Distance PID", new DriveDistanceProfiled(0.5, m_drivetrain));
+    m_chooser.addOption("Profiled Distance PID", new DriveDistanceProfiled(1.0, m_drivetrain));
     m_chooser.addOption("Profiled Turn Angle PID", new TurnToAngleProfiled(180, m_drivetrain));
     SmartDashboard.putData(m_chooser);
   }

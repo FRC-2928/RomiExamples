@@ -53,8 +53,7 @@
     "Shuffleboard": {
       "Drivetrain": {
         "open": true
-      },
-      "open": true
+      }
     },
     "SmartDashboard": {
       "open": true

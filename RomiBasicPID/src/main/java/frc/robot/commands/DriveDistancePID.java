@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -13,6 +15,10 @@ import frc.robot.subsystems.Drivetrain;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DriveDistancePID extends PIDCommand {
+
+  private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  private static NetworkTable m_table = inst.getTable("Shuffleboard/Drivetrain");
+  
   /** Creates a new DriveDistancePID. */
   public DriveDistancePID(double targetDistance, Drivetrain drivetrain) {
     super(
@@ -35,6 +41,15 @@ public class DriveDistancePID extends PIDCommand {
 
     // Configure additional PID options by calling `getController` here.
     getController().setTolerance(0.05, 0.05);
+  }
+
+  public void initialize() {
+    super.initialize();
+    // Override PID parameters from Shuffleboard
+    getController().setSetpoint(m_table.getEntry("Distance").getDouble(0.0));
+    getController().setP(m_table.getEntry("DistancekP").getDouble(Constants.kPDriveVel));
+    getController().setI(m_table.getEntry("DistancekI").getDouble(Constants.kIDriveVel));
+    getController().setD(m_table.getEntry("DistancekD").getDouble(Constants.kDDriveVel));
   }
 
   // Returns true when the command should end.

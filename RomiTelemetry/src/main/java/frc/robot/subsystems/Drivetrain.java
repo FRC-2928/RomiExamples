@@ -195,8 +195,8 @@ public class Drivetrain extends SubsystemBase {
   public void publishTelemetry() {
         
     // Display the meters per/second for each wheel and the heading
-    SmartDashboard.putNumber("Left Encoder Velocity", m_leftEncoder.getRate());
-    SmartDashboard.putNumber("Right Encoder Velocity", m_rightEncoder.getRate());
+    SmartDashboard.putNumber("Left Wheel Speed", m_leftEncoder.getRate());
+    SmartDashboard.putNumber("Right Wheel Speed", m_rightEncoder.getRate());
     SmartDashboard.putNumber("Heading", getHeading());
 
     // Display the distance travelled for each wheel

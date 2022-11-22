@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -14,6 +16,10 @@ import frc.robot.subsystems.Drivetrain;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TurnToAnglePID extends PIDCommand {
+
+  private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  private static NetworkTable m_table = inst.getTable("Shuffleboard/Drivetrain");
+
   /** Creates a new TurnToAnglePID. */
   public TurnToAnglePID(double targetAngleDegrees, Drivetrain drivetrain) {
     super(
@@ -37,6 +43,14 @@ public class TurnToAnglePID extends PIDCommand {
     // Configure additional PID options by calling `getController` here.
     getController().enableContinuousInput(-180, 180);
     getController().setTolerance(5.0, 10.0);
+  }
+
+  public void initialize() {
+    super.initialize();
+    // Override PID parameters from Shuffleboard
+    getController().setP(m_table.getEntry("TurnKP").getDouble(Constants.kPTurnVel));
+    getController().setD(m_table.getEntry("TurnkI").getDouble(Constants.kITurnVel));
+    getController().setD(m_table.getEntry("TurnkD").getDouble(Constants.kDTurnVel));
   }
 
   // Returns true when the command should end.

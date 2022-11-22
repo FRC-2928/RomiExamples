@@ -30,8 +30,8 @@ public final class Constants {
     public static final double kDTurnVel = 0.002;
 
     // For profiled distances PID
-    public static final double kPDriveProfiled = 1.2;
-    public static final double kIDriveProfiled = 0.2;
+    public static final double kPDriveProfiled = 1.1;
+    public static final double kIDriveProfiled = 0.0;
     public static final double kDDriveProfiled = 0.0;
 
     // For profiled turns PID
@@ -40,8 +40,8 @@ public final class Constants {
     public static final double kDTurnProfiled = 0;
 
     // Max speed and acceleration of the robot
-    public static final double kMaxSpeedMetersPerSecond = 0.5;
-    public static final double kMaxAccelMetersPerSecondSquared = 0.5;
+    public static final double kMaxSpeedMetersPerSecond = 0.44;
+    public static final double kMaxAccelMetersPerSecondSquared = 0.44;
 
     // Drive profile
     public static final TrapezoidProfile.Constraints kTrapezoidProfileConstraints =
@@ -58,15 +58,20 @@ public final class Constants {
                                      kMaxTurnAccelDegPerSSquared);                                 
     
     // The linear inertia gain, volts
-    public static final double ksVolts = 0.461;
+    public static final double ksVolts = 0.5;
+    public static final double ksVoltsLeft = 0.50;
+    public static final double ksVoltsRight = 0.44;
     // The linear velocity gain, volts per (meter per second)
     // Increase this if you drive short
-    public static final double kvVoltSecondsPerMeter = 6.93;
-    public static final double kvVoltSecondsPerMeterLeft = 8.8;
-    public static final double kvVoltSecondsPerMeterRight = 9.5;
+    public static final double kvVoltSecondsPerMeter = 1.888;
+    public static final double kvVoltSecondsPerMeterLeft = 1.888;
+    // public static final double kvVoltSecondsPerMeterLeft = 2.0;
+    // public static final double kvVoltSecondsPerMeterRight = 1.892;
+    public static final double kvVoltSecondsPerMeterRight = 1.7;
     // The linear acceleration gain, volts per (meter per second squared).
-    public static final double kaVoltSecondsSquaredPerMeter = 0.0737;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.46138;
     
+    // Combined left and right volts feedforward
     public static final SimpleMotorFeedforward kFeedForward = 
         new SimpleMotorFeedforward(ksVolts, 
                                     kvVoltSecondsPerMeter, 
@@ -74,12 +79,12 @@ public final class Constants {
 
     // Left and Right motors are very different, so each has its own FF.
     public static final SimpleMotorFeedforward kLeftFeedForward = 
-        new SimpleMotorFeedforward(ksVolts, 
+        new SimpleMotorFeedforward(ksVoltsLeft, 
                                     kvVoltSecondsPerMeterLeft, 
                                     kaVoltSecondsSquaredPerMeter);
 
     public static final SimpleMotorFeedforward kRightFeedForward = 
-        new SimpleMotorFeedforward(ksVolts, 
+        new SimpleMotorFeedforward(ksVoltsRight, 
                                     kvVoltSecondsPerMeterRight, 
                                     kaVoltSecondsSquaredPerMeter);
 }
